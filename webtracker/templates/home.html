@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <title>Home</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://unpkg.com/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
+
+    <section class="text-blueGray-700 ">
+        <div class="container flex flex-col items-center px-5 py-8 mx-auto">
+            <div class="flex flex-col w-full mb-12 text-left lg:text-center">
+                <h1 class="mx-auto mb-12 text-2xl font-semibold leading-none tracking-tighter text-black lg:w-1/2 sm:text-6xl title-font"> Welcome {{username}} </h1>
+            </div>
+        </div>
+    </section>
+	<div class="container mx-auto items-center justify-center px-5 py-12 lg:px-20">
+        <div class="flex flex-wrap ">
+            <div class="w-full mx-auto my-4 bg-white border rounded-lg shadow-xl lg:w-1/4">
+            <div class="p-6">
+                <h2 class="mb-8 text-xs font-semibold tracking-widest text-black uppercase title-font"> Users right here</h2>
+                <h4 class="mb-8 text-2xl font-semibold leading-none tracking-tighter text-black lg:text-3xl title-font "> Users</h4>
+                <p class="mb-3 text-base leading-relaxed text-blueGray-500"> List of all the registered users on the platform. </p>
+                <p></p>
+                <button type="button" onclick="location.href='{% url 'users' %}' " class="w-full px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900 "> BROWSE </button>
+            </div>
+            </div>
+            <div class="w-full mx-auto my-4 bg-white border rounded-lg shadow-xl lg:w-1/4">
+            <div class="p-6">
+                <h2 class="mb-8 text-xs font-semibold tracking-widest text-black uppercase title-font"> Track Requests right here</h2>
+                <h4 class="mb-8 text-2xl font-semibold leading-none tracking-tighter text-black lg:text-3xl title-font "> Track Requests</h4>
+                <p class="mb-3 text-base leading-relaxed text-blueGray-500"> List of all the tracking requests sent by other users. </p>
+                <p></p>
+                <button type="button" onclick="location.href='{% url 'gettrackingrequest' %}' " class="w-full px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900 "> BROWSE </button>
+            </div>
+            </div>
+        </div>
+    </div>
+</head>
+<body>
+<br><br>
+    <div id="result" class="flex items-center justify-center">
+        <button type="button" id="startWatchButton" onclick=startWatchPosition() class="block px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900">Update Location</button>
+        <button type="button" id="stopWatchButton" onclick=stopWatchPosition() class="hidden px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900">Stop Location</button>
+    </div>
+<br><br>
+<div class="flex items-center justify-center">
+    <button type="button" onclick="location.href='{% url 'logout' %}' " class="px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900">Logout</button>
+</div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script type="text/javascript">
+    const url = "{% url 'updateuserlocation' %}";
+    const csrfmiddlewaretoken = "{{ csrf_token }}";
+</script>
+<script src = "{% static 'webtracker/js/home.js' %}"></script>
+</body>
+</html>
