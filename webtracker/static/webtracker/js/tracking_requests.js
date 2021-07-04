@@ -16,14 +16,18 @@ $(".search-table").on("keyup", function() {
 function buildTable(tracking_requests) {
     var table_body = document.getElementById('trackingRequestsTable').getElementsByTagName('tbody')[0];
     for (let index = 0; index < tracking_requests.length; index++) {
-        if (tracking_requests[index][2]) {
-            table_body.insertRow().innerHTML = "<tr> <td id='userId' class='userId px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
+        if (tracking_requests[index][3]) {
+            table_body.insertRow().innerHTML = "<tr> <td id='userId' class='userId hidden px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
                         <p class='text-gray-900 whitespace-no-wrap'>"
                                 + tracking_requests[index][0] +
                         "</p> \
                     </td> <td class='px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
                         <p class='text-gray-900 whitespace-no-wrap'>"
                                 + tracking_requests[index][1] +
+                        "</p> \
+                    </td> <td class='px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
+                        <p class='text-gray-900 whitespace-no-wrap'>"
+                                + tracking_requests[index][2] +
                         "</p> \
                     </td> \
                     <td><div class='flex items-center justify-center'> \
@@ -31,13 +35,17 @@ function buildTable(tracking_requests) {
                     REVOKE</button></div></td> \
                     </tr>";
         } else {
-            table_body.insertRow().innerHTML = "<tr> <td id='userId' class='userId px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
+            table_body.insertRow().innerHTML = "<tr> <td id='userId' class='userId hidden px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
                         <p class='text-gray-900 whitespace-no-wrap'>"
                                 + tracking_requests[index][0] +
                         "</p> \
                     </td> <td class='px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
                         <p class='text-gray-900 whitespace-no-wrap'>"
                                 + tracking_requests[index][1] +
+                        "</p> \
+                    </td> <td class='px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
+                        <p class='text-gray-900 whitespace-no-wrap'>"
+                                + tracking_requests[index][2] +
                         "</p> \
                     </td> \
                     <td><div class='flex items-center justify-center space-x-4'> \

@@ -28,7 +28,7 @@ def post_signup(request):
         id_token = user['idToken']
         request.session['id_token'] = str(id_token)
         request.session['user_id'] = str(user_id)
-        db.child('users').child(str(user_id)).update({"username": username}, id_token)
+        db.child('users').child(str(user_id)).update({"username": username, "email": email}, id_token)
     except:
         return render(request, "signup.html")
     return render(request, "login.html")
@@ -46,12 +46,13 @@ def post_login(request):
         user = authe.refresh(user['refreshToken'])
         print("User", user)
     except:
-        message = "Invalid Credentials!! Please ChecK your Data"
+        message = "Invalid Credentials!! Please Check your Data!"
         return render(request, "login.html", {"message": message})
     id_token = user['idToken']
     user_id = user['userId']
     request.session['id_token'] = str(id_token)
     request.session['user_id'] = str(user_id)
+    request.session['email'] = str(email)
     username = db.child('users').child(user_id).child('username').get(id_token).val()
     request.session['username'] = str(username)
     context = {"username": username}
@@ -65,11 +66,11 @@ def users(request):
         tracker = db.child('trackers').child(str(user.key())).child(request.session['user_id']).get(request.session['id_token']).val()
         print("Tracker", tracker)
         if not tracker:
-            users_list.append((user.key(), user.val()['username'], "No"))
+            users_list.append((user.key(), user.val()['username'], user.val()['email'], "No"))
         elif tracker['allow']:
-            users_list.append((user.key(), user.val()['username'], True))
+            users_list.append((user.key(), user.val()['username'], user.val()['email'], True))
         else:
-            users_list.append((user.key(), user.val()['username'], False))
+            users_list.append((user.key(), user.val()['username'], user.val()['email'], False))
     # for tracker in trackers.each():
     #     if tracker.key() != "coordinates":
     #         trackers_list.append((tracker.key(), tracker.val()['username']))
@@ -101,7 +102,7 @@ def send_tracking_request(request):
     trackee_id = request.POST.get('trackee_id')
     trackee_id = trackee_id.strip()
     if trackee_id != "":
-        tracker_info = {request.session['user_id']: {"allow": False, "username": request.session['username']}}
+        tracker_info = {request.session['user_id']: {"allow": False, "username": request.session['username'], "email": request.session['email']}}
         db.child('trackers').child(str(trackee_id)).update(tracker_info, request.session['id_token'])
     return HttpResponse('success')
 
@@ -111,9 +112,9 @@ def get_tracking_request(request):
     if trackers.val():
         for tracker in trackers.each():
             if 'allow' in tracker.val() and tracker.val()['allow']:
-                tracking_requests.append((tracker.key(), tracker.val()['username'], True))
+                tracking_requests.append((tracker.key(), tracker.val()['username'], tracker.val()['email'], True))
             elif 'allow' in tracker.val() and not tracker.val()['allow']:
-                tracking_requests.append((tracker.key(), tracker.val()['username'], False))
+                tracking_requests.append((tracker.key(), tracker.val()['username'], tracker.val()['email'], False))
     context = {'tracking_requests': tracking_requests}
     print("tracking_requests", tracking_requests)
     return render(request, "tracking_requests.html", context)

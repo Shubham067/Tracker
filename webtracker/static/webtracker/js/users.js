@@ -31,40 +31,52 @@ function buildTable(users_list) {
     var table_body = document.getElementById('usersTable').getElementsByTagName('tbody')[0];
     table_body.innerHTML = "";
     for (let index = 0; index < users_list.length; index++) {
-        if (users_list[index][2] == 'No') {
-            table_body.insertRow().innerHTML = "<tr> <td id='userId' class='userId px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
+        if (users_list[index][3] == 'No') {
+            table_body.insertRow().innerHTML = "<tr> <td id='userId' class='userId hidden px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
                             <p class='text-gray-900 whitespace-no-wrap'>"
                                     + users_list[index][0] +
                             "</p> \
                         </td> <td class='px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
                             <p class='text-gray-900 whitespace-no-wrap'>"
                                     + users_list[index][1] +
+                            "</p> \
+                        </td> <td class='px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
+                            <p class='text-gray-900 whitespace-no-wrap'>"
+                                    + users_list[index][2] +
                             "</p> \
                         </td> \
                         <td><div class='flex items-center justify-center'><button id='send' type='button' class='send-tracking-request py-2 px-4  bg-indigo-600 hover:bg-indigo-800 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg'>\
                         SEND</button></div></td>\
                         </tr>";
-        } else if (users_list[index][2]) {
-            table_body.insertRow().innerHTML = "<tr> <td id='userId' class='userId px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
+        } else if (users_list[index][3]) {
+            table_body.insertRow().innerHTML = "<tr> <td id='userId' class='userId hidden px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
                             <p class='text-gray-900 whitespace-no-wrap'>"
                                     + users_list[index][0] +
                             "</p> \
                         </td> <td class='px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
                             <p class='text-gray-900 whitespace-no-wrap'>"
                                     + users_list[index][1] +
+                            "</p> \
+                        </td> <td class='px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
+                            <p class='text-gray-900 whitespace-no-wrap'>"
+                                    + users_list[index][2] +
                             "</p> \
                         </td> \
                         <td><div class='flex items-center justify-center'><button id='track' type='button' class='track-user-location py-2 px-3  bg-green-600 hover:bg-green-800 focus:ring-green-500 focus:ring-offset-green-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg'>\
                         TRACK</button></div></td>\
                         </tr>";
         } else {
-            table_body.insertRow().innerHTML = "<tr> <td id='userId' class='px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
+            table_body.insertRow().innerHTML = "<tr> <td id='userId' class='userId hidden px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
                             <p class='text-gray-900 whitespace-no-wrap'>"
                                     + users_list[index][0] +
                             "</p> \
                         </td> <td class='px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
                             <p class='text-gray-900 whitespace-no-wrap'>"
                                     + users_list[index][1] +
+                            "</p> \
+                        </td> <td class='px-5 py-5 border-b border-gray-200 bg-white text-sm'> \
+                            <p class='text-gray-900 whitespace-no-wrap'>"
+                                    + users_list[index][2] +
                             "</p> \
                         </td> \
                         <td class='px-5 py-5 border-b border-gray-200 bg-white text-center uppercase text-sm'> \
