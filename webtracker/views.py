@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import pyrebase
 import json
 import time
@@ -80,10 +80,10 @@ def users(request):
 
 def logout(request):
     try:
-        del request.session['uid']
+        del request.session['user_id']
     except:
         pass
-    return render(request, "login.html")
+    return redirect("login")
 
 def update_user_location(request):
     latitude = float(request.POST.get('latitude'))
