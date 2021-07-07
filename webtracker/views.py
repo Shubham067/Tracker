@@ -1,9 +1,18 @@
 from django.shortcuts import render, redirect
 import pyrebase
 import json
+import pickle
 import time
 from django.http import HttpResponse, StreamingHttpResponse
 import os
+from django.core.cache import cache
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django_redis import get_redis_connection
+
+conn = get_redis_connection("default")
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 config = json.loads(os.getenv("firebase_config"))
 
@@ -13,8 +22,10 @@ authe = firebase.auth()
 
 db = firebase.database()
 
+
 def signup(request):
     return render(request, "signup.html")
+
 
 def post_signup(request):
     username = request.POST.get('username')
@@ -29,12 +40,17 @@ def post_signup(request):
         request.session['id_token'] = str(id_token)
         request.session['user_id'] = str(user_id)
         db.child('users').child(str(user_id)).update({"username": username, "email": email}, id_token)
+
+        # remove users key from redis cache since new user got added
+        cache.delete("users")
     except:
         return render(request, "signup.html")
     return render(request, "login.html")
 
+
 def login(request):
     return render(request, "login.html")
+
 
 def post_login(request):
     email = request.POST.get('email')
@@ -58,12 +74,24 @@ def post_login(request):
     context = {"username": username}
     return render(request, "home.html", context)
 
+
 def users(request):
     users_list = []
-    trackers_list = []
-    users = db.child('users').get(request.session['id_token'])
+
+    if "users" in cache:
+        # get users from redis cache
+        print("======CACHE HIT======")
+        users = cache.get("users")
+    else:
+        print("======CACHE MISS======")
+        users = db.child('users').get(request.session['id_token'])
+
+        # add users key to redis cache
+        cache.set("users", users, timeout=CACHE_TTL)
+
     for user in users.each():
         tracker = db.child('trackers').child(str(user.key())).child(request.session['user_id']).get(request.session['id_token']).val()
+        # conn.hset("tracker", str(user.key()), json.dumps({request.session['user_id']: tracker}))
         print("Tracker", tracker)
         if not tracker:
             users_list.append((user.key(), user.val()['username'], user.val()['email'], "No"))
@@ -71,12 +99,11 @@ def users(request):
             users_list.append((user.key(), user.val()['username'], user.val()['email'], True))
         else:
             users_list.append((user.key(), user.val()['username'], user.val()['email'], False))
-    # for tracker in trackers.each():
-    #     if tracker.key() != "coordinates":
-    #         trackers_list.append((tracker.key(), tracker.val()['username']))
+
     context = {'users_list': users_list}
     print(users_list)
     return render(request, "users.html", context)
+
 
 def logout(request):
     try:
@@ -84,6 +111,7 @@ def logout(request):
     except:
         pass
     return redirect("login")
+
 
 def update_user_location(request):
     latitude = float(request.POST.get('latitude'))
@@ -98,17 +126,33 @@ def update_user_location(request):
         db.child('trackers').child(str(request.session['user_id'])).update(coordinates, request.session['id_token'])
     return HttpResponse('success')
 
+
 def send_tracking_request(request):
     trackee_id = request.POST.get('trackee_id')
     trackee_id = trackee_id.strip()
     if trackee_id != "":
         tracker_info = {request.session['user_id']: {"allow": False, "username": request.session['username'], "email": request.session['email']}}
         db.child('trackers').child(str(trackee_id)).update(tracker_info, request.session['id_token'])
+
+        # keep cache updated
+        conn.hdel("trackers", str(trackee_id))
     return HttpResponse('success')
+
 
 def get_tracking_request(request):
     tracking_requests = []
-    trackers = db.child("trackers").child(str(request.session['user_id'])).get(request.session['id_token'])
+    if "trackers" in conn:
+        # get trackers from redis cache
+        print("======CACHE HIT======")
+        trackers = pickle.loads(conn.hget("trackers", str(request.session['user_id'])))
+    else:
+        print("======CACHE MISS======")
+        trackers = db.child("trackers").child(str(request.session['user_id'])).get(request.session['id_token'])
+
+        # add trackers key to redis cache
+        conn.hset("trackers", str(request.session['user_id']), pickle.dumps(trackers))
+        conn.expire("trackers", 900) # setting TTL for trackers key in redis cache to 15 minutes(15 * 60 = 900 seconds)
+
     if trackers.val():
         for tracker in trackers.each():
             if 'allow' in tracker.val() and tracker.val()['allow']:
@@ -119,13 +163,18 @@ def get_tracking_request(request):
     print("tracking_requests", tracking_requests)
     return render(request, "tracking_requests.html", context)
 
+
 def allow_tracking_request(request):
     tracker_id = request.POST.get('tracker_id')
     tracker_id = tracker_id.strip()
     if tracker_id != "":
         tracker_info = {"allow": True}
         db.child("trackers").child(str(request.session['user_id'])).child(str(tracker_id)).update(tracker_info, request.session['id_token'])
+        
+        # keep cache updated
+        conn.hdel("trackers", str(request.session['user_id']))
     return HttpResponse('success')
+
 
 def revoke_tracking_request(request):
     tracker_id = request.POST.get('tracker_id')
@@ -133,26 +182,23 @@ def revoke_tracking_request(request):
     if tracker_id != "":
         tracker_info = {"allow": False}
         db.child("trackers").child(str(request.session['user_id'])).child(str(tracker_id)).update(tracker_info, request.session['id_token'])
+        
+        # keep cache updated
+        conn.hdel("trackers", str(request.session['user_id']))
     return HttpResponse('success')
+
 
 def reject_tracking_request(request):
     tracker_id = request.POST.get('tracker_id')
     tracker_id = tracker_id.strip()
     db.child("trackers").child(str(request.session['user_id'])).child(str(tracker_id)).remove(request.session['id_token'])
+    
+    # keep cache updated
+    conn.hdel("trackers", str(request.session['user_id']))
     return HttpResponse('success')
 
+
 def track_user_location(request):
-    # context = {}
-    # def stream_handler(message):
-    #     data = message["data"]
-    #     print(message["event"]) # put
-    #     print(message["path"]) # /-K7yGTTEp7O549EzTYtI
-    #     print(data) # {'title': 'Pyrebase', "body": "etc..."}
-    #     # global context
-    #     context.update({'latLng': data})
-    #     request.session['coord'] = context
-    #     # render(request, "google_maps.html", context)
-        
     trackee_id = request.POST.get('trackee_id')
     trackee_id = trackee_id.strip()
     location = {}
@@ -164,17 +210,8 @@ def track_user_location(request):
         request.session['trackee_id'] = trackee_id
         request.session['coord'] = location
     print("location", location)
-    # if trackee_id != "":
-    #     my_stream = db.child("trackers").child(str(trackee_id)).child('coordinates').stream(stream_handler, request.session['id_token'])
-    # time.sleep(3)
-    # print("context", context)
-    
-
-    # print("stream", my_stream.sse.__iter__)
-    # context = {'latLng': my_stream.val()["data"]}
     return HttpResponse('success')
-    # HttpResponse('success')
-    # render(request, "google_maps.html", context)
+
 
 def display_map(request):
     context = {}
@@ -183,6 +220,7 @@ def display_map(request):
         "mapsApiKey": os.getenv("mapsApiKey")
     })
     return render(request, "google_maps.html", context)
+
 
 def stream_location(request):
     if request.POST:
