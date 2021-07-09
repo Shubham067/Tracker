@@ -9,8 +9,8 @@
 
     <section class="text-blueGray-700 ">
         <div class="container flex flex-col items-center px-5 py-8 mx-auto">
-            <div class="flex flex-col w-full mb-12 text-left lg:text-center">
-                <h1 class="mx-auto mb-12 text-2xl font-semibold leading-none tracking-tighter text-black lg:w-1/2 sm:text-6xl title-font"> Welcome {{username}} </h1>
+            <div class="flex flex-col w-full mb-1 text-left lg:text-center">
+                <h1 class="mx-auto mb-1 text-2xl font-semibold leading-none tracking-tighter text-black lg:w-1/2 sm:text-6xl title-font"> Welcome {{username}} </h1>
             </div>
         </div>
     </section>
@@ -22,7 +22,7 @@
                 <h4 class="mb-8 text-2xl font-semibold leading-none tracking-tighter text-black lg:text-3xl title-font "> Users</h4>
                 <p class="mb-3 text-base leading-relaxed text-blueGray-500"> List of all the registered users on the platform. </p>
                 <p></p>
-                <button type="button" onclick="location.href='{% url 'users' %}' " class="w-full px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900 "> BROWSE </button>
+                <button name="Users" type="button" onclick="location.href='{% url 'users' %}' " class="w-full px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900 "> BROWSE </button>
             </div>
             </div>
             <div class="w-full mx-auto my-4 bg-white border rounded-lg shadow-xl lg:w-1/4">
@@ -31,7 +31,7 @@
                 <h4 class="mb-8 text-2xl font-semibold leading-none tracking-tighter text-black lg:text-3xl title-font "> Track Requests</h4>
                 <p class="mb-3 text-base leading-relaxed text-blueGray-500"> List of all the tracking requests sent by other users. </p>
                 <p></p>
-                <button type="button" onclick="location.href='{% url 'gettrackingrequest' %}' " class="w-full px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900 "> BROWSE </button>
+                <button name="Tracking Requests" type="button" onclick="location.href='{% url 'gettrackingrequest' %}' " class="w-full px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900 "> BROWSE </button>
             </div>
             </div>
         </div>
@@ -40,12 +40,12 @@
 <body>
 <br><br>
     <div id="result" class="flex items-center justify-center">
-        <button type="button" id="startWatchButton" onclick=startWatchPosition() class="block px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900">Update Location</button>
-        <button type="button" id="stopWatchButton" onclick=stopWatchPosition() class="hidden px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900">Stop Location</button>
+        <button name="Update Location" type="button" id="startWatchButton" onclick=startWatchPosition() class="block px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900">Update Location</button>
+        <button name="Stop Location" type="button" id="stopWatchButton" onclick=stopWatchPosition() class="hidden px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900">Stop Location</button>
     </div>
 <br><br>
 <div class="flex items-center justify-center">
-    <button type="button" onclick="location.href='{% url 'logout' %}' " class="px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900">Logout</button>
+    <button name="Logout" type="button" onclick="location.href='{% url 'logout' %}' " class="px-16 py-2 my-2 text-base font-medium text-white transition duration-500 ease-in-out transform border-black rounded-md bg-black focus:shadow-outline focus:outline-none focus:ring-2 ring-offset-current ring-offset-2 hover:bg-blueGray-900">Logout</button>
 </div>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>

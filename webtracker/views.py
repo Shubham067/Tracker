@@ -45,7 +45,7 @@ def post_signup(request):
         cache.delete("users")
     except:
         return render(request, "signup.html")
-    return render(request, "login.html")
+    return redirect("login")
 
 
 def login(request):
@@ -71,7 +71,10 @@ def post_login(request):
     request.session['email'] = str(email)
     username = db.child('users').child(user_id).child('username').get(id_token).val()
     request.session['username'] = str(username)
-    context = {"username": username}
+    return redirect("home")
+
+def home(request):
+    context = {"username": request.session['username']}
     return render(request, "home.html", context)
 
 
