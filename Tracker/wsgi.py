@@ -12,7 +12,6 @@ import dotenv
 
 from django.core.wsgi import get_wsgi_application
 from pathlib import Path
-from whitenoise import WhiteNoise
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,4 +26,3 @@ if os.getenv('DJANGO_SETTINGS_MODULE'):
     os.environ['DJANGO_SETTINGS_MODULE'] = os.getenv('DJANGO_SETTINGS_MODULE')
 
 application = get_wsgi_application()
-application = WhiteNoise(application, root = os.path.join(BASE_DIR, 'staticfiles'))
