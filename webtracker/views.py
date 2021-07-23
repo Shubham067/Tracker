@@ -70,6 +70,7 @@ def post_login(request):
     request.session['user_id'] = str(user_id)
     request.session['email'] = str(email)
     username = db.child('users').child(user_id).child('username').get(id_token).val()
+    print(username)
     request.session['username'] = str(username)
     context = {"username": request.session['username']}
     return render(request, "home.html", context)
