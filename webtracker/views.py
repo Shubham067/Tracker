@@ -71,8 +71,8 @@ def post_login(request):
     request.session['email'] = str(email)
     username = db.child('users').child(user_id).child('username').get(id_token).val()
     request.session['username'] = str(username)
-    # context = {"username": request.session['username']}
-    return redirect("home")
+    context = {"username": request.session['username']}
+    return render(request, "postlogin.html", context)
 
 def home(request):
     context = {"username": request.session['username']}
