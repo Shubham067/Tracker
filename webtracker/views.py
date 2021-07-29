@@ -84,7 +84,7 @@ def users(request):
 
     # get users from redis cache
     users = cache.get("users")
-    
+
     if not users:
         print("======CACHE MISS======")
         users = db.child('users').get(request.session['id_token'])
@@ -146,7 +146,7 @@ def get_tracking_request(request):
     tracking_requests = []
 
     # get trackers from redis cache
-    trackers = pickle.loads(conn.hget("trackers", str(request.session['user_id'])))
+    trackers = conn.hget("trackers", str(request.session['user_id']))
 
     if not trackers:
         print("======CACHE MISS======")
@@ -155,6 +155,8 @@ def get_tracking_request(request):
         # add trackers key to redis cache
         conn.hset("trackers", str(request.session['user_id']), pickle.dumps(trackers))
         conn.expire("trackers", 900) # setting TTL for trackers key in redis cache to 15 minutes(15 * 60 = 900 seconds)
+    else:
+        trackers = pickle.loads(trackers)
 
     if trackers.val():
         for tracker in trackers.each():
