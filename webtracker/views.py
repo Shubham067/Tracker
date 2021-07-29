@@ -82,11 +82,10 @@ def home(request):
 def users(request):
     users_list = []
 
-    if "users" in cache:
-        # get users from redis cache
-        print("======CACHE HIT======")
-        users = cache.get("users")
-    else:
+    # get users from redis cache
+    users = cache.get("users")
+    
+    if not users:
         print("======CACHE MISS======")
         users = db.child('users').get(request.session['id_token'])
 
@@ -121,7 +120,7 @@ def update_user_location(request):
     latitude = float(request.POST.get('latitude'))
     longitude = float(request.POST.get('longitude'))
     coordinates = {"coordinates": {"lat": latitude, "lon": longitude}}
-    print(db.child('trackers').shallow().get(request.session['id_token']).val())
+
     if request.session['user_id'] not in db.child('trackers').shallow().get(request.session['id_token']).val():
         print("Called 1=====")
         db.child('trackers').child(str(request.session['user_id'])).set(coordinates, request.session['id_token'])
@@ -145,11 +144,11 @@ def send_tracking_request(request):
 
 def get_tracking_request(request):
     tracking_requests = []
-    if "trackers" in conn:
-        # get trackers from redis cache
-        print("======CACHE HIT======")
-        trackers = pickle.loads(conn.hget("trackers", str(request.session['user_id'])))
-    else:
+
+    # get trackers from redis cache
+    trackers = pickle.loads(conn.hget("trackers", str(request.session['user_id'])))
+
+    if not trackers:
         print("======CACHE MISS======")
         trackers = db.child("trackers").child(str(request.session['user_id'])).get(request.session['id_token'])
 
@@ -171,35 +170,42 @@ def get_tracking_request(request):
 def allow_tracking_request(request):
     tracker_id = request.POST.get('tracker_id')
     tracker_id = tracker_id.strip()
+
     if tracker_id != "":
         tracker_info = {"allow": True}
         db.child("trackers").child(str(request.session['user_id'])).child(str(tracker_id)).update(tracker_info, request.session['id_token'])
-        
+
         # keep cache updated
         conn.hdel("trackers", str(request.session['user_id']))
-    return HttpResponse('success')
+        result = json.dumps({"status": True})
+    return HttpResponse(result, content_type = 'application/json')
 
 
 def revoke_tracking_request(request):
     tracker_id = request.POST.get('tracker_id')
     tracker_id = tracker_id.strip()
+
     if tracker_id != "":
         tracker_info = {"allow": False}
         db.child("trackers").child(str(request.session['user_id'])).child(str(tracker_id)).update(tracker_info, request.session['id_token'])
         
         # keep cache updated
         conn.hdel("trackers", str(request.session['user_id']))
-    return HttpResponse('success')
+        result = json.dumps({"status": True})
+    return HttpResponse(result, content_type = 'application/json')
 
 
 def reject_tracking_request(request):
     tracker_id = request.POST.get('tracker_id')
     tracker_id = tracker_id.strip()
-    db.child("trackers").child(str(request.session['user_id'])).child(str(tracker_id)).remove(request.session['id_token'])
+
+    if tracker_id != "":
+        db.child("trackers").child(str(request.session['user_id'])).child(str(tracker_id)).remove(request.session['id_token'])
     
-    # keep cache updated
-    conn.hdel("trackers", str(request.session['user_id']))
-    return HttpResponse('success')
+        # keep cache updated
+        conn.hdel("trackers", str(request.session['user_id']))
+        result = json.dumps({"status": True})
+    return HttpResponse(result, content_type = 'application/json')
 
 
 def track_user_location(request):
