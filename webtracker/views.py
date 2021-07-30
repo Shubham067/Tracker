@@ -48,10 +48,6 @@ def post_signup(request):
     return redirect("login")
 
 
-def login(request):
-    return render(request, "login.html")
-
-
 def post_login(request):
     email = request.POST.get('email')
     password = request.POST.get('password')
@@ -71,8 +67,16 @@ def post_login(request):
     request.session['email'] = str(email)
     username = db.child('users').child(user_id).child('username').get(id_token).val()
     request.session['username'] = str(username)
-    context = {"username": request.session['username']}
-    return render(request, "postlogin.html", context)
+    return redirect("home")
+    # context = {"username": request.session['username']}
+    # return render(request, "postlogin.html", context)
+
+
+def login(request):
+    if request.method == 'POST':
+        return post_login(request)
+    return render(request, "login.html")
+
 
 def home(request):
     context = {"username": request.session['username']}
