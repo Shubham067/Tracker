@@ -23,10 +23,6 @@ authe = firebase.auth()
 db = firebase.database()
 
 
-def signup(request):
-    return render(request, "signup.html")
-
-
 def post_signup(request):
     username = request.POST.get('username')
     email = request.POST.get('email')
@@ -46,6 +42,12 @@ def post_signup(request):
     except:
         return render(request, "signup.html")
     return redirect("login")
+
+
+def signup(request):
+    if request.method == 'POST':
+        return post_signup(request)
+    return render(request, "signup.html")
 
 
 def post_login(request):
@@ -68,8 +70,6 @@ def post_login(request):
     username = db.child('users').child(user_id).child('username').get(id_token).val()
     request.session['username'] = str(username)
     return redirect("home")
-    # context = {"username": request.session['username']}
-    # return render(request, "postlogin.html", context)
 
 
 def login(request):
