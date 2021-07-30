@@ -137,13 +137,15 @@ def update_user_location(request):
 def send_tracking_request(request):
     trackee_id = request.POST.get('trackee_id')
     trackee_id = trackee_id.strip()
+
     if trackee_id != "":
         tracker_info = {request.session['user_id']: {"allow": False, "username": request.session['username'], "email": request.session['email']}}
         db.child('trackers').child(str(trackee_id)).update(tracker_info, request.session['id_token'])
 
         # keep cache updated
         conn.hdel("trackers", str(trackee_id))
-    return HttpResponse('success')
+        result = json.dumps({"status": True})
+    return HttpResponse(result, content_type = 'application/json')
 
 
 def get_tracking_request(request):
@@ -225,8 +227,9 @@ def track_user_location(request):
                 location.update({coordinate.key(): coordinate.val()})
         request.session['trackee_id'] = trackee_id
         request.session['coord'] = location
-    print("location", location)
-    return HttpResponse('success')
+        print("location", location)
+        result = json.dumps({"status": True})
+    return HttpResponse(result, content_type = 'application/json')
 
 
 def display_map(request):
