@@ -9,6 +9,7 @@ from django.core.cache import cache
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django_redis import get_redis_connection
+from .tasks import send_email_task
 
 conn = get_redis_connection("default")
 
@@ -39,6 +40,10 @@ def post_signup(request):
 
         # remove users key from redis cache since new user got added
         cache.delete("users")
+
+        # Send welcome email after successful user signup
+        subject = 'Welcome to Trackers'
+        send_email_task.delay(username, email, password, subject)
     except:
         return render(request, "signup.html")
     return redirect("login")
