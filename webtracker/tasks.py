@@ -7,7 +7,7 @@ logger = get_task_logger(__name__)
 
 
 @task(name="send_email_task")
-def send_email_task(username, email, password, subject):
+def send_email_task(username, email, password, subject, template, user):
     """sends an email after successful user signup"""
     logger.info("Sent welcome email")
-    return send_email(username, email, password, subject)
+    return send_email(username, email, password, subject, template, user)

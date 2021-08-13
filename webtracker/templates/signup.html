@@ -40,34 +40,34 @@
                         <span class="ml-4"> Login with Google </span>
                         </div>
                     </button>
-                    <button type="button" class="inline-flex px-4 py-3 ml-8 font-semibold text-black transition duration-500 ease-in-out transform bg-white border rounded-lg border-blueGray-300 hover:bg-black focus:bg-blueGray-100 hover:text-black focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2">
+                    <!-- <button type="button" class="inline-flex px-4 py-3 ml-8 font-semibold text-black transition duration-500 ease-in-out transform bg-white border rounded-lg border-blueGray-300 hover:bg-black focus:bg-blueGray-100 hover:text-black focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2">
                         <div class="flex items-center justify-center">
                         <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
                             <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z">
                             </path>
                         </svg>
                         </div>
-                    </button>
+                    </button> -->
                     </div>
                     <form class="mt-6" action="" method="POST">
                         {% csrf_token %}
                         <div>
                             <label class="block text-base font-medium leading-relaxed text-blueGray-700">User Name</label>
-                            <input type="text" name="username" id="" placeholder="Your User Name " class="w-full px-4 py-2 mt-2 text-base transition duration-500 ease-in-out transform border-transparent rounded-lg bg-blueGray-100 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ext-black focus:border-blueGray-500">
+                            <input type="text" name="username" id="" placeholder="Your User Name " class="w-full px-4 py-2 mt-2 text-base transition duration-500 ease-in-out transform border-transparent rounded-lg bg-blueGray-100 focus:outline-none focus:shadow-outline focus:ring-2 ring-blue-500 ring-offset-2 ext-black focus:border-blueGray-500" required="">
                         </div>
                         <div class="mt-4">
                             <label class="block text-base font-medium leading-relaxed text-blueGray-700">Email Address</label>
-                            <input type="email" name="email" id="" placeholder="Your Email " class="w-full px-4 py-2 mt-2 text-base transition duration-500 ease-in-out transform border-transparent rounded-lg bg-blueGray-100 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ext-black focus:border-blueGray-500" autocomplete="" required="">
+                            <input type="email" name="email" id="" placeholder="Your Email " class="w-full px-4 py-2 mt-2 text-base transition duration-500 ease-in-out transform border-transparent rounded-lg bg-blueGray-100 focus:outline-none focus:shadow-outline focus:ring-2 ring-blue-500 ring-offset-2 ext-black focus:border-blueGray-500" autocomplete="" required="">
                         </div>
                         <div class="flex flex-wrap mt-4 mb-6 -mx-3">
                             <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
-                            <label class="text-base font-medium leading-relaxed text-blueGray-700" for="password" minlength="6"> Password </label>
-                            <input class="block w-full px-4 py-2 mt-2 text-base text-black transition duration-500 ease-in-out transform border-transparent rounded-lg bg-blueGray-100 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ext-black focus:border-blueGray-500" id="password" name="password" type="text" placeholder="Your Password">
+                            <label class="text-base font-medium leading-relaxed text-blueGray-700" for="password"> Password </label>
+                            <input class="block w-full px-4 py-2 mt-2 text-base text-black transition duration-500 ease-in-out transform border-transparent rounded-lg bg-blueGray-100 focus:outline-none focus:shadow-outline focus:ring-2 ring-blue-500 ring-offset-2 ext-black focus:border-blueGray-500" id="password" name="password" type="password" placeholder="Your Password" minlength="6" required="">
                             <p class="mt-1 text-xs italic text-black">Please fill out this field.</p>
                             </div>
                             <div class="w-full px-3 md:w-1/2">
                             <label class="text-base font-medium leading-relaxed text-blueGray-700" for="confirm"> Confirm </label>
-                            <input class="block w-full px-4 py-2 mt-2 text-base text-black transition duration-500 ease-in-out transform border-transparent rounded-lg bg-blueGray-100 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ext-black focus:border-blueGray-500 " id="confirm" name="password" type="text" placeholder="Confirm">
+                            <input class="block w-full px-4 py-2 mt-2 text-base text-black transition duration-500 ease-in-out transform border-transparent rounded-lg bg-blueGray-100 focus:outline-none focus:shadow-outline focus:ring-2 ring-blue-500 ring-offset-2 ext-black focus:border-blueGray-500 " id="confirm" name="password" type="password" placeholder="Confirm" minlength="6" required="">
                             </div>
                         </div>
                         <button type="submit" class="block w-full px-4 py-3 mt-6 font-semibold text-white transition duration-500 ease-in-out transform rounded-lg bg-gradient-to-r from-black hover:from-black to-black focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 hover:to-black">Sign Up</button>

@@ -43,7 +43,13 @@ def post_signup(request):
 
         # Send welcome email after successful user signup
         subject = 'Welcome to Trackers'
-        send_email_task.delay(username, email, password, subject)
+        template = 'welcome_email.html'
+        user = {
+            'username': username,
+            'email': email,
+            'password': password
+        }
+        send_email_task.delay(username, email, password, subject, template, user)
     except:
         return render(request, "signup.html")
     return redirect("login")
